@@ -1,1 +1,60 @@
+# 22.07.29(금)
 
+### 프로그래머스 신고결과받기 https://school.programmers.co.kr/learn/courses/30/lessons/92334
+```java
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+class Solution {
+    public int[] solution(String[] id_list, String[] report, int k) {
+        // 회원당 신고당한 사람 목록
+        HashMap<String, ArrayList<String>> accusedMap = new HashMap<>();
+        // 신고되었다는 결과메일을 받는 횟수
+        HashMap<String, Integer> accuserMap = new HashMap<>();
+
+        // map 데이터 담기
+        for (int i = 0; i < id_list.length; i++) {
+            // 신고당한사람, 신고한사람들
+            accusedMap.put(id_list[i], new ArrayList<>());
+            // 신고한사람, 횟수
+            accuserMap.put(id_list[i], 0);
+        }
+
+        // 신고정보 주입
+        for (int i = 0; i < report.length; i++) {
+            // 신고한 사람
+            String accuser = report[i].split(" ")[0];
+            // 신고당한 사람
+            String accused = report[i].split(" ")[1];
+            // 이미 신고한사람이 아니라면
+            if (!accusedMap.get(accused).contains(accuser)) {
+                // map에 저장
+                accusedMap.get(accused).add(accuser);
+            }
+        }
+
+        // 신고횟수가 k회 이상인 사람들 조회
+        for (int i = 0; i < accusedMap.size(); i++) {
+            List<String> list = accusedMap.get(id_list[i]);
+            // k회 이상 신고를 받은 횟수의 사람이라면
+            if (list.size() >= k) {
+                // 정지당하는 회원을 신고한 사람들
+                for (int j = 0; j < list.size(); j++) {
+                    // 해당 회원들의 메일발송횟수 추가
+                    accuserMap.put(list.get(j), accuserMap.get(list.get(j)) + 1);
+                }
+            }
+        }
+        // 리턴데이터
+        int[] answer = new int[accuserMap.size()];
+        // 순서에 맞게 주입
+        for (int i = 0; i < answer.length; i++) {
+            // 데이터 주입
+            answer[i] = accuserMap.get(id_list[i]);
+        }
+
+        return answer;
+    }
+}
+```
